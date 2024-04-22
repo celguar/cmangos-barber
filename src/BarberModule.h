@@ -36,6 +36,9 @@ namespace cmangos_module
         bool OnPreGossipHello(Player* player, Creature* creature) override;
         bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action, const std::string& code, uint32 gossipListId) override;
 
+        // NPC hooks
+        void OnAddToWorld(Creature* creature) override;
+
     private:
         // Barber
         void SelectFacialFeature(Player* player, Creature* creature, int change);
@@ -44,10 +47,6 @@ namespace cmangos_module
         void ChangeEffect(Player* player);
 
     private:
-        maxStyles_t maxHairStyles[MAX_RACES];
-        uint8 maxHairColor[MAX_RACES];
-        maxStyles_t maxFacialFeatures[MAX_RACES];
-
         uint32 hairstyle;
         uint32 haircolor;
         uint32 facialfeature;

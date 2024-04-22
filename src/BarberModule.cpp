@@ -17,7 +17,7 @@
 namespace cmangos_module
 {
     BarberModule::BarberModule()
-    : Module("TbcBoost", new BarberModuleConfig())
+    : Module("Barber", new BarberModuleConfig())
     {
         
     }
@@ -29,56 +29,8 @@ namespace cmangos_module
 
     void BarberModule::OnInitialize()
     {
-
+        helmetShown = false;
     }
-
-    maxStyles_t maxHairStyles[MAX_RACES] =
-    {
-        {0,0},  //                        0
-        {11,18},// RACE_HUMAN           = 1,
-        {6,6},  //  RACE_ORC            = 2,
-        {10,13},// RACE_DWARF           = 3,
-        {6,6},  // RACE_NIGHTELF        = 4,
-        {10,9}, // RACE_UNDEAD_PLAYER   = 5,
-        {7,6},  //  RACE_TAUREN         = 6,
-        {6,6},  // RACE_GNOME           = 7,
-        {5,4},  // RACE_TROLL           = 8,
-        {0,0},  // RACE_GOBLIN          = 9,
-        {9,13}, //  RACE_BLOODELF       = 10,
-        {7,10}, //  RACE_DRAENEI        = 11
-    };
-
-    uint8 maxHairColor[MAX_RACES] =
-    {
-        0,  //                        0
-        9,  // RACE_HUMAN           = 1,
-        7,  //  RACE_ORC            = 2,
-        9,  // RACE_DWARF           = 3,
-        7,  // RACE_NIGHTELF        = 4,
-        9,  // RACE_UNDEAD_PLAYER   = 5,
-        2,  //  RACE_TAUREN         = 6,
-        8,  // RACE_GNOME           = 7,
-        9,  // RACE_TROLL           = 8,
-        0,  // RACE_GOBLIN          = 9,
-        9,  //  RACE_BLOODELF       = 10,
-        6,  //  RACE_DRAENEI        = 11
-    };
-
-    maxStyles_t maxFacialFeatures[MAX_RACES] =
-    {
-        {0,0},  //                        0
-        {8,6},  // RACE_HUMAN           = 1,
-        {10,6}, // RACE_ORC             = 2,
-        {10,5}, // RACE_DWARF           = 3,
-        {5,9},  // RACE_NIGHTELF        = 4,
-        {16,7}, // RACE_UNDEAD_PLAYER   = 5,
-        {6,4},  // RACE_TAUREN          = 6,
-        {7,6},  // RACE_GNOME           = 7,
-        {10,5}, // RACE_TROLL           = 8,
-        {0,0},  // RACE_GOBLIN          = 9,
-        {10,9}, // RACE_BLOODELF        = 10,
-        {7,6},  // RACE_DRAENEI         = 11
-    };
 
     bool BarberModule::OnPreGossipHello(Player* player, Creature* creature)
     {
@@ -226,9 +178,6 @@ namespace cmangos_module
                 facialfeature = player->GetByteValue(PLAYER_BYTES_2, 0);
                 if (sitting)
                 {
-                    if (!player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM))
-                        player->ToggleFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
-
                     if (player->GetMoney() >= 0)
                         player->ADD_GOSSIP_ITEM(0, "Cut my hair, barber!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
                     else
@@ -329,6 +278,12 @@ namespace cmangos_module
                         else
                             player->SendBuyError( BUY_ERR_NOT_ENOUGHT_MONEY, creature, 0, 0);
                     }*/
+                    if (helmetShown && player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM))
+                    {
+                        helmetShown = false;
+                        player->ToggleFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
+                    }
+
                     player->ADD_GOSSIP_ITEM(0, FeatureGossipMenu1, GOSSIP_SENDER_OPTION, GOSSIP_ACTION_INFO_DEF + 2);
                     player->ADD_GOSSIP_ITEM(0, FeatureGossipMenu2, GOSSIP_SENDER_OPTION, GOSSIP_ACTION_INFO_DEF + 4);
                     player->ADD_GOSSIP_ITEM(0, FeatureGossipMenu, GOSSIP_SENDER_OPTION, GOSSIP_ACTION_INFO_DEF + 6);
@@ -337,6 +292,12 @@ namespace cmangos_module
                     // hair style
                     // next - increase hair style
                 case GOSSIP_ACTION_INFO_DEF + 2:
+                    if (!player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM))
+                    {
+                        helmetShown = true;
+                        player->ToggleFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
+                    }
+
                     if (sender == GOSSIP_SENDER_SUBOPTION)
                         SelectHairStyle(player, creature, 1);
                     // previous - decrease it
@@ -353,6 +314,12 @@ namespace cmangos_module
                     // hair color
                     // next - increase hair color
                 case GOSSIP_ACTION_INFO_DEF + 4:
+                    if (!player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM))
+                    {
+                        helmetShown = true;
+                        player->ToggleFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
+                    }
+
                     if (sender == GOSSIP_SENDER_SUBOPTION)
                         SelectHairColor(player, creature, 1);
                     // previous - decrease hair color
@@ -369,10 +336,22 @@ namespace cmangos_module
                     // facial feature
                     // next - increase hair style
                 case GOSSIP_ACTION_INFO_DEF + 6:
+                    if (!player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM))
+                    {
+                        helmetShown = true;
+                        player->ToggleFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
+                    }
+
                     if (sender == GOSSIP_SENDER_SUBOPTION)
                         SelectFacialFeature(player, creature, 1);
                     // previous - decrease it
                 case GOSSIP_ACTION_INFO_DEF + 7:
+                    if (!player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM))
+                    {
+                        helmetShown = true;
+                        player->ToggleFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
+                    }
+
                     if (action == GOSSIP_ACTION_INFO_DEF + 7 && sender == GOSSIP_SENDER_SUBOPTION)
                         SelectFacialFeature(player, creature, -1);
                     // choose options again
@@ -394,6 +373,71 @@ namespace cmangos_module
 
         return false;
     }
+
+    void BarberModule::OnAddToWorld(Creature* creature)
+    {
+        // Check if speaking with barber npc.
+        if (creature->GetEntry() != NPC_BARBER)
+            return;
+
+        if (!GetConfig()->enabled)
+        {
+            creature->SetRespawnDelay(RESPAWN_ONE_DAY);
+            creature->ForcedDespawn();
+        }
+        else
+        {
+            creature->Respawn();
+        }
+    }
+
+    maxStyles_t maxHairStyles[MAX_RACES] =
+    {
+        {0,0},  //                        0
+        {11,18},// RACE_HUMAN           = 1,
+        {6,6},  //  RACE_ORC            = 2,
+        {10,13},// RACE_DWARF           = 3,
+        {6,6},  // RACE_NIGHTELF        = 4,
+        {10,9}, // RACE_UNDEAD_PLAYER   = 5,
+        {7,6},  //  RACE_TAUREN         = 6,
+        {6,6},  // RACE_GNOME           = 7,
+        {5,4},  // RACE_TROLL           = 8,
+        {0,0},  // RACE_GOBLIN          = 9,
+        {9,13}, //  RACE_BLOODELF       = 10,
+        {7,10}, //  RACE_DRAENEI        = 11
+    };
+
+    uint8 maxHairColor[MAX_RACES] =
+    {
+        0,  //                        0
+        9,  // RACE_HUMAN           = 1,
+        7,  //  RACE_ORC            = 2,
+        9,  // RACE_DWARF           = 3,
+        7,  // RACE_NIGHTELF        = 4,
+        9,  // RACE_UNDEAD_PLAYER   = 5,
+        2,  //  RACE_TAUREN         = 6,
+        8,  // RACE_GNOME           = 7,
+        9,  // RACE_TROLL           = 8,
+        0,  // RACE_GOBLIN          = 9,
+        9,  //  RACE_BLOODELF       = 10,
+        6,  //  RACE_DRAENEI        = 11
+    };
+
+    maxStyles_t maxFacialFeatures[MAX_RACES] =
+    {
+        {0,0},  //                        0
+        {8,6},  // RACE_HUMAN           = 1,
+        {10,6}, // RACE_ORC             = 2,
+        {10,5}, // RACE_DWARF           = 3,
+        {5,9},  // RACE_NIGHTELF        = 4,
+        {16,7}, // RACE_UNDEAD_PLAYER   = 5,
+        {6,4},  // RACE_TAUREN          = 6,
+        {7,6},  // RACE_GNOME           = 7,
+        {10,5}, // RACE_TROLL           = 8,
+        {0,0},  // RACE_GOBLIN          = 9,
+        {10,9}, // RACE_BLOODELF        = 10,
+        {7,6},  // RACE_DRAENEI         = 11
+    };
 
     void BarberModule::ChangeEffect(Player* player)
     {
