@@ -1,19 +1,17 @@
-#include "TbcBoostModuleConfig.h"
+#include "BarberModuleConfig.h"
 
 namespace cmangos_module
 {
-    TbcBoostModuleConfig::TbcBoostModuleConfig()
-    : ModuleConfig("tbcboost.conf")
+    BarberModuleConfig::BarberModuleConfig()
+    : ModuleConfig("barber.conf")
     , enabled(false)
-    , cost(0U)
     {
     
     }
 
-    bool TbcBoostModuleConfig::OnLoad()
+    bool BarberModuleConfig::OnLoad()
     {
-        enabled = config.GetBoolDefault("TbcBoost.Enable", false);
-        cost = config.GetIntDefault("TbcBoost.Cost", 10000U);
+        enabled = config.GetBoolDefault("Barber.Enable", false);
         return true;
     }
 }
