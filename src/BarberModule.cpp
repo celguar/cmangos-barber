@@ -370,9 +370,11 @@ namespace cmangos_module
         {7,6},  //  RACE_TAUREN         = 6,
         {6,6},  // RACE_GNOME           = 7,
         {5,4},  // RACE_TROLL           = 8,
+#if EXPANSION > 0
         {0,0},  // RACE_GOBLIN          = 9,
         {9,13}, //  RACE_BLOODELF       = 10,
         {7,10}, //  RACE_DRAENEI        = 11
+#endif
     };
 
     uint8 maxHairColor[MAX_RACES] =
@@ -386,9 +388,11 @@ namespace cmangos_module
         2,  //  RACE_TAUREN         = 6,
         8,  // RACE_GNOME           = 7,
         9,  // RACE_TROLL           = 8,
+#if EXPANSION > 0
         0,  // RACE_GOBLIN          = 9,
         9,  //  RACE_BLOODELF       = 10,
         6,  //  RACE_DRAENEI        = 11
+#endif
     };
 
     maxStyles_t maxFacialFeatures[MAX_RACES] =
@@ -402,9 +406,11 @@ namespace cmangos_module
         {6,4},  // RACE_TAUREN          = 6,
         {7,6},  // RACE_GNOME           = 7,
         {10,5}, // RACE_TROLL           = 8,
+#if EXPANSION > 0
         {0,0},  // RACE_GOBLIN          = 9,
         {10,9}, // RACE_BLOODELF        = 10,
         {7,6},  // RACE_DRAENEI         = 11
+#endif
     };
 
     void BarberModule::ChangeEffect(Player* player)
