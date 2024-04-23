@@ -148,7 +148,7 @@ namespace cmangos_module
                     else
                         player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_NEED_MONEY).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
                 }
-                player->SEND_GOSSIP_MENU(GOSSIP_BARBER_GREET, creature->GetObjectGuid());
+                player->SEND_GOSSIP_MENU(player->GetTeam() == ALLIANCE ? GOSSIP_BARBER_GREET_ALLIANCE : GOSSIP_BARBER_GREET_HORDE, creature->GetObjectGuid());
                 return true;
             }
         }
@@ -215,6 +215,7 @@ namespace cmangos_module
                 case RACE_TROLL:
                     text3 = GOSSIP_BARBER_TUSKS;
                     break;
+#if EXPANSION > 0
                 case RACE_BLOODELF:
                     if (player->getGender() == GENDER_FEMALE)
                         text3 = GOSSIP_BARBER_EARRINGS;
@@ -222,6 +223,7 @@ namespace cmangos_module
                 case RACE_DRAENEI:
                     player->getGender() == GENDER_FEMALE ? text3 = GOSSIP_BARBER_HORNS : text3 = GOSSIP_BARBER_TENTACLES;
                     break;
+#endif
                 }
                 // MAP
                 // 1 - main menu
