@@ -49,7 +49,6 @@ namespace cmangos_module
 
                 player->GetPlayerMenu()->ClearMenus();
 
-                int32 text = 0;
                 uint8 standState = player->getStandState();
                 bool sitting = true;
 
@@ -59,7 +58,7 @@ namespace cmangos_module
                 // Select a gossip text
                 if (!sitting)
                 {
-                    creature->MonsterWhisper("Please sit down!", player);
+                    creature->MonsterWhisper(GetGossipText(player, GOSSIP_BARBER_SIT_DOWN).c_str(), player);
 
                     float distance = 10.0f;
                     GameObjectList gameobjects;
@@ -138,40 +137,6 @@ namespace cmangos_module
                 if (!sitting)
                     return true;
 
-                //switch (player->getRace())
-                //{
-                //case RACE_HUMAN:
-                //    text = player->getGender() == GENDER_FEMALE ? 50013 : 50012;    // texts seem to have been lost, even in l4g db release
-                //    break;
-                //case RACE_ORC:
-                //    text = player->getGender() == GENDER_FEMALE ? 50002 : 50001;
-                //    break;
-                //case RACE_DWARF:
-                //    text = player->getGender() == GENDER_FEMALE ? 50015 : 50014;
-                //    break;
-                //case RACE_NIGHTELF:
-                //    text = player->getGender() == GENDER_FEMALE ? 50019 : 50018;
-                //    break;
-                //case RACE_UNDEAD:
-                //    text = player->getGender() == GENDER_FEMALE ? 50008 : 50007;
-                //    break;
-                //case RACE_TAUREN:
-                //    text = player->getGender() == GENDER_FEMALE ? 50006 : 50005;
-                //    break;
-                //case RACE_GNOME:
-                //    text = player->getGender() == GENDER_FEMALE ? 50017 : 50016;
-                //    break;
-                //case RACE_DRAENEI:
-                //    text = player->getGender() == GENDER_FEMALE ? 50021 : 50020;
-                //    break;
-                //case RACE_TROLL:
-                //    text = player->getGender() == GENDER_FEMALE ? 50004 : 50003;
-                //    break;
-                //case RACE_BLOODELF:
-                //    text = player->getGender() == GENDER_FEMALE ? 50010 : 50009;
-                //    break;
-                //}
-
                 // store values to restore if player choose to cancel
                 hairstyle = player->GetByteValue(PLAYER_BYTES, 2);
                 haircolor = player->GetByteValue(PLAYER_BYTES, 3);
@@ -179,9 +144,9 @@ namespace cmangos_module
                 if (sitting)
                 {
                     if (player->GetMoney() >= 0)
-                        player->ADD_GOSSIP_ITEM(0, "Cut my hair, barber!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                        player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_CUT_HAIR).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
                     else
-                        player->ADD_GOSSIP_ITEM(0, "You need 0 copper to pay me.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
+                        player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_NEED_MONEY).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
                 }
                 player->SEND_GOSSIP_MENU(GOSSIP_BARBER_GREET, creature->GetObjectGuid());
                 return true;
@@ -208,53 +173,54 @@ namespace cmangos_module
 
                 player->GetPlayerMenu()->ClearMenus();
 
-                char const* FeatureGossipMenu1 = "I want to change my hair style.";
-                if (player->getRace() == RACE_TAUREN)
-                    FeatureGossipMenu1 = "I want to change my horns.";
+                uint32 text1 = GOSSIP_BARBER_HAIR_STYLE;
+                uint32 text2 = GOSSIP_BARBER_HAIR_COLOR;
+                uint32 text3 = GOSSIP_BARBER_FACIAL_HAIR;
 
-                char const* FeatureGossipMenu2 = "I want to change my hair color.";
                 if (player->getRace() == RACE_TAUREN)
-                    FeatureGossipMenu1 = "I want to change my horn color.";
+                    text1 = GOSSIP_BARBER_HORNS;
 
-                char const* FeatureGossipMenu = "I want to change my facial hair style.";
+                if (player->getRace() == RACE_TAUREN)
+                    text2 = GOSSIP_BARBER_HORN_COLOR;
+
                 switch (player->getRace())
                 {
                 case RACE_HUMAN:
                     if (player->getGender() == GENDER_FEMALE)
-                        FeatureGossipMenu = "I want to change my piercings.";
+                        text3 = GOSSIP_BARBER_PIERCINGS;
                     break;
                 case RACE_ORC:
                     if (player->getGender() == GENDER_FEMALE)
-                        FeatureGossipMenu = "I want to change my piercings.";
+                        text3 = GOSSIP_BARBER_PIERCINGS;
                     break;
                 case RACE_DWARF:
                     if (player->getGender() == GENDER_FEMALE)
-                        FeatureGossipMenu = "I want to change my earrings.";
+                        text3 = GOSSIP_BARBER_EARRINGS;
                     break;
                 case RACE_NIGHTELF:
                     if (player->getGender() == GENDER_FEMALE)
-                        FeatureGossipMenu = "I want to change my markings.";
+                        text3 = GOSSIP_BARBER_MARKINGS;
                     break;
                 case RACE_UNDEAD:
-                    FeatureGossipMenu = "I want to change my face.";
+                    text3 = GOSSIP_BARBER_FACE;
                     break;
                 case RACE_TAUREN:
                     if (player->getGender() == GENDER_FEMALE)
-                        FeatureGossipMenu = "I want to change my hair.";
+                        text3 = GOSSIP_BARBER_HAIR;
                     break;
                 case RACE_GNOME:
                     if (player->getGender() == GENDER_FEMALE)
-                        FeatureGossipMenu = "I want to change my earrings.";
+                        text3 = GOSSIP_BARBER_EARRINGS;
                     break;
                 case RACE_TROLL:
-                    FeatureGossipMenu = "I want to change my tusks.";
+                    text3 = GOSSIP_BARBER_TUSKS;
                     break;
                 case RACE_BLOODELF:
                     if (player->getGender() == GENDER_FEMALE)
-                        FeatureGossipMenu = "I want to change my earrings.";
+                        text3 = GOSSIP_BARBER_EARRINGS;
                     break;
                 case RACE_DRAENEI:
-                    player->getGender() == GENDER_FEMALE ? FeatureGossipMenu = "I want to change my horns." : FeatureGossipMenu = "I want to change my tentacles.";
+                    player->getGender() == GENDER_FEMALE ? text3 = GOSSIP_BARBER_HORNS : text3 = GOSSIP_BARBER_TENTACLES;
                     break;
                 }
                 // MAP
@@ -284,9 +250,9 @@ namespace cmangos_module
                         player->ToggleFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
                     }
 
-                    player->ADD_GOSSIP_ITEM(0, FeatureGossipMenu1, GOSSIP_SENDER_OPTION, GOSSIP_ACTION_INFO_DEF + 2);
-                    player->ADD_GOSSIP_ITEM(0, FeatureGossipMenu2, GOSSIP_SENDER_OPTION, GOSSIP_ACTION_INFO_DEF + 4);
-                    player->ADD_GOSSIP_ITEM(0, FeatureGossipMenu, GOSSIP_SENDER_OPTION, GOSSIP_ACTION_INFO_DEF + 6);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, text1).c_str(), GOSSIP_SENDER_OPTION, GOSSIP_ACTION_INFO_DEF + 2);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, text2).c_str(), GOSSIP_SENDER_OPTION, GOSSIP_ACTION_INFO_DEF + 4);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, text3).c_str(), GOSSIP_SENDER_OPTION, GOSSIP_ACTION_INFO_DEF + 6);
                     player->SEND_GOSSIP_MENU(50023, creature->GetObjectGuid());
                     break;
                     // hair style
@@ -305,9 +271,9 @@ namespace cmangos_module
                     if (action == GOSSIP_ACTION_INFO_DEF + 3 && sender == GOSSIP_SENDER_SUBOPTION)
                         SelectHairStyle(player, creature, -1);
                     // choose options again
-                    player->ADD_GOSSIP_ITEM(0, "Next one!", GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 2);
-                    player->ADD_GOSSIP_ITEM(0, "Previous one!", GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 3);
-                    player->ADD_GOSSIP_ITEM(0, "I'll have this one.", GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 1);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_NEXT).c_str(), GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 2);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_PREV).c_str(), GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 3);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_CHOOSE).c_str(), GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 1);
                     player->SEND_GOSSIP_MENU(50024, creature->GetObjectGuid());
                     break;
 
@@ -327,9 +293,9 @@ namespace cmangos_module
                     if (action == GOSSIP_ACTION_INFO_DEF + 5 && sender == GOSSIP_SENDER_SUBOPTION)
                         SelectHairColor(player, creature, -1);
                     // choose options again
-                    player->ADD_GOSSIP_ITEM(0, "Next one!", GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 4);
-                    player->ADD_GOSSIP_ITEM(0, "Previous one!", GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 5);
-                    player->ADD_GOSSIP_ITEM(0, "I'll have this one.", GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 1);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_NEXT).c_str(), GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 4);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_PREV).c_str(), GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 5);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_CHOOSE).c_str(), GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 1);
                     player->SEND_GOSSIP_MENU(50024, creature->GetObjectGuid());
                     break;
 
@@ -355,9 +321,9 @@ namespace cmangos_module
                     if (action == GOSSIP_ACTION_INFO_DEF + 7 && sender == GOSSIP_SENDER_SUBOPTION)
                         SelectFacialFeature(player, creature, -1);
                     // choose options again
-                    player->ADD_GOSSIP_ITEM(0, "Next one!", GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 6);
-                    player->ADD_GOSSIP_ITEM(0, "Previous one!", GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 7);
-                    player->ADD_GOSSIP_ITEM(0, "I'll have this one.", GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 1);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_NEXT).c_str(), GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 6);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_PREV).c_str(), GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 7);
+                    player->ADD_GOSSIP_ITEM(0, GetGossipText(player, GOSSIP_BARBER_CHOOSE).c_str(), GOSSIP_SENDER_SUBOPTION, GOSSIP_ACTION_INFO_DEF + 1);
                     player->SEND_GOSSIP_MENU(50024, creature->GetObjectGuid());
                     break;
 
@@ -510,5 +476,16 @@ namespace cmangos_module
 
         player->SetByteValue(PLAYER_BYTES_2, 0, current);
         ChangeEffect(player);
-    }    
+    }
+
+    std::string BarberModule::GetGossipText(Player* player, uint32 textId)
+    {
+        int loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+        std::string Text_0[MAX_GOSSIP_TEXT_OPTIONS], Text_1[MAX_GOSSIP_TEXT_OPTIONS];
+        GossipText const* gossip = sObjectMgr.GetGossipText(textId);
+        Text_0[0] = gossip->Options[0].Text_0;
+        Text_1[0] = gossip->Options[0].Text_1;
+        sObjectMgr.GetNpcTextLocaleStringsAll(textId, loc_idx, &Text_0, &Text_1);
+        return Text_0[0];
+    }
 }

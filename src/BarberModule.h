@@ -14,6 +14,24 @@ namespace cmangos_module
         GO_BARBER_CHAIR = 164767,
 
         GOSSIP_BARBER_GREET = 50404,
+        GOSSIP_BARBER_CUT_HAIR = 50405,
+        GOSSIP_BARBER_NEED_MONEY = 50406,
+        GOSSIP_BARBER_SIT_DOWN = 50407,
+        GOSSIP_BARBER_NEXT = 50408,
+        GOSSIP_BARBER_PREV = 50409,
+        GOSSIP_BARBER_CHOOSE = 50410,
+        GOSSIP_BARBER_HAIR_STYLE = 50411,
+        GOSSIP_BARBER_HAIR_COLOR = 50412,
+        GOSSIP_BARBER_FACIAL_HAIR = 50413,
+        GOSSIP_BARBER_HORNS = 50414,
+        GOSSIP_BARBER_HORN_COLOR = 50415,
+        GOSSIP_BARBER_PIERCINGS = 50416,
+        GOSSIP_BARBER_EARRINGS = 50417,
+        GOSSIP_BARBER_MARKINGS = 50418,
+        GOSSIP_BARBER_FACE = 50419,
+        GOSSIP_BARBER_HAIR = 50420,
+        GOSSIP_BARBER_TUSKS = 50421,
+        GOSSIP_BARBER_TENTACLES = 50422,
         GOSSIP_SENDER_OPTION = 50,
         GOSSIP_SENDER_SUBOPTION = 51,
     };
@@ -45,6 +63,7 @@ namespace cmangos_module
         void SelectHairColor(Player* player, Creature* creature, int change);
         void SelectHairStyle(Player* player, Creature* creature, int change);
         void ChangeEffect(Player* player);
+        std::string GetGossipText(Player* player, uint32 textId);
 
     private:
         uint32 hairstyle;

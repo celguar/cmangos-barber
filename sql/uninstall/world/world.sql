@@ -1,7 +1,7 @@
 SET @Entry := 190012;
 
 DELETE FROM creature_template WHERE entry IN (@Entry);
-DELETE FROM npc_text WHERE id IN (50404);
+DELETE FROM npc_text WHERE id BETWEEN 50404 AND 50422;
 DELETE FROM creature WHERE id IN (@Entry);
 
 -- Restore Wooden Chair IDs in Stormwind
