@@ -28,6 +28,7 @@ set(LIBRARY_SRCS ${barber_source})
 # Define ENABLE_PLAYERBOTS if need
 if (BUILD_PLAYERBOTS)
   include_directories(${CMAKE_SOURCE_DIR}/src/modules/PlayerBots)
+  include_directories(${CMAKE_SOURCE_DIR}/dep/g3dlite)
   add_definitions(-DENABLE_PLAYERBOTS)
 endif()
 
