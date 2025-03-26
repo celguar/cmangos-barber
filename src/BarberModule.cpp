@@ -8,6 +8,7 @@
 #include "Spells/SpellMgr.h"
 #include "Grids/GridNotifiers.h"
 #include "Grids/GridNotifiersImpl.h"
+#include "Grids/CellImpl.h"
 #include "Tools/Language.h"
 
 #ifdef ENABLE_PLAYERBOTS
